@@ -1,8 +1,9 @@
-Data::RandomKeep version 0.01
+Data::RandomKeep version 0.02
 ================
 
-This module helps you randomly keep a given number of items, for
-example, 10 random lines from a file.
+This module helps you randomly keep a given number of offered items,
+for example, 10 random lines from a file, or 6 numbers out of 49 (to
+pick a lottery ticket for example).
 
 INSTALLATION
 

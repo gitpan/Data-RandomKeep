@@ -9,9 +9,14 @@ Data::RandomKeep - Randomly keep a given number of offered items.
     use Data::RandomKeep;
 
         # Keep 10 random lines from a file.
-    my $keeper = Data::RandomKeep->new(10)
-    $keeper->offer($_) while <$file_hdl>;
-    my $kept_lines_array_ref = $keeper->kept();
+    my $lines_keeper = Data::RandomKeep->new(10)
+    $lines_keeper->offer($_) while <$file_hdl>;
+    my $kept_lines_array_ref = $lines_keeper->kept();
+
+        # Select 6 numbers out of 49 as a pick for a lottery ticket.
+    my $numbers_keeper = Data::RandomKeep->new(6);
+    $numbers_keeper->offer(1 .. 49);
+    print "This might win: @{$numbers_keeper->kept()}\n";
 
 =head1 DESCRIPTION
 
@@ -34,7 +39,7 @@ kept up to that point, using the kept() method.
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 # --------------------------------------------------------------------
 
@@ -58,24 +63,26 @@ sub new {
 
 # --------------------------------------------------------------------
 
-=head2 $self->offer ($item)
+=head2 $self->offer (@items)
 
-Offers $item for inclusion into the set of kept items. The decision to
-keep it will be statistically correct, given the total number of items
-the instance is supposed to keep and the number of items offered so
-far.
+Offers @items for inclusion into the set of kept items. The decision
+to keep it will be statistically correct, given the total number of
+items the instance is supposed to keep and the number of items offered
+so far.
 
 =cut
 
 sub offer {
-    my ($self, $item) = @_;
-    ++$self->{nb_seen};
-    if (rand() < $self->{nb_to_keep} / $self->{nb_seen}) {
-        $self->{kept}[
-            $self->{nb_kept} < $self->{nb_to_keep}
-                ? $self->{nb_kept}++
-                : rand($self->{nb_to_keep})
-        ] = [$self->{nb_seen}, $item];
+    my ($self, @items) = @_;
+    for my $item (@items) {
+        ++$self->{nb_seen};
+        if (rand() < $self->{nb_to_keep} / $self->{nb_seen}) {
+            $self->{kept}[
+                $self->{nb_kept} < $self->{nb_to_keep}
+                    ? $self->{nb_kept}++
+                    : rand($self->{nb_to_keep})
+            ] = [$self->{nb_seen}, $item];
+        }
     }
 }
 

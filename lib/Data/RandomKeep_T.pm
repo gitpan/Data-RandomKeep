@@ -93,10 +93,11 @@ example('a4', sub {
     for my $run (1 .. $nb_runs) {
         my $keeper = Data::RandomKeep->new($nb_to_keep)
           or die 'Constructor failed';
-        $keeper->offer($_) for 1 .. $nb_to_offer;
+        $keeper->offer(1 .. $nb_to_offer);
         ok_labeled($run,
             do {
                 my $succeeded = 1;  # So far.
+                $succeeded = 0 unless @{$keeper->kept()} == $nb_to_keep;
                 my $low_so_far = 0;
                 for my $kept (@{$keeper->kept()}) {
                     $succeeded = 0 unless $kept > $low_so_far
